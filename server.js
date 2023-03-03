@@ -10,6 +10,9 @@ app.use(express.urlencoded({ extended:true }));
 app.use(express.static('public'));
 
 //create path to note.html
+app.use('/api/notes', apiRoutes)
+
+//Get request fo the notes
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 })

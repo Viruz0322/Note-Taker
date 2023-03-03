@@ -30,7 +30,7 @@ const writeToFile = (destination, content) => {
         if (err) {
             console.log(err);
         } else {
-            console.info(`Data written to ${destination}`);
+            console.info(`\nData written to ${destination}`);
         }
     });
 }
@@ -39,12 +39,29 @@ const writeToFile = (destination, content) => {
 
 router.get('/', (req, res)=> {
     //get all routes from the DB
-    res.json(`Got your ${req.method} request`);
+    //res.json(`Got your ${req.method} request`);
+    const dataString = fs.readFileSync('./db/db.json', 'utf-8');
+    res.json(JSON.parse(dataString))
 })
 
 router.post('/', (req, res)=> {
     //add a note to the DB
     res.json(`Got your ${req.method} request`);
-})
+
+    const { title, text} = req.body;
+    if (title && text) {
+        const newNote ={
+            title, text, id:uuid()
+        };
+        readAndAppend(newNote, './db/db.json');
+    }else {
+        console.log('Error: both title and text required');
+    }
+
+    const currentNoes = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
+
+    fs.writeFileSync('./db/db.json', JSON.stringify(currentNotes));
+
+});
 
 module.exports = router;
